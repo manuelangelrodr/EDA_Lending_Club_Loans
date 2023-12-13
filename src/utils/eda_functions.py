@@ -159,7 +159,7 @@ def porcentaje_var_cat_status(df, column_df):
 # Función Prueba T-Student
 
 
-def test_t_student(df_paid, df_charged_off, column_df)
+def test_t_student(df_paid, df_charged_off, column_df):
     '''
     La función realiza la prueba t-Student entre una variable numérica continua de la que no conocemos su distribución
     o sabemos que no es una gaussiana y la otra variable categórica 'loan_status' que indica si el prestatmo se ha pagado o no.
