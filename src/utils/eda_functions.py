@@ -82,7 +82,7 @@ def grafico_mapa_calor_impagados(df, col_heatmap, color):
     relative_percentages_df = pd.DataFrame(relative_percentages, columns=['Charged Off Relative Percentage'])
 
     # Crear un gráfico de calor
-    plt.figure(figsize=(7, 4))
+    plt.figure(figsize=(10, 6))
     heatmap = plt.imshow(relative_percentages_df.values.reshape(1, -1), aspect='auto', cmap= color)
 
     # Añadir etiquetas, título y colorbar
@@ -109,28 +109,31 @@ def grafico_barras_loan_status(df, column_df):
     Output:
     Gráfico de barras de la variable categórica distinguiendo entre pagado e impagado
     '''
-    # Crear el gráfico de barras agrupado
-    fig, ax = plt.subplots()
 
-    # Agrupar los datos por 'loan_status' y contar los valores de la variable categórica de estudio
-    grouped = df.groupby('loan_status')[column_df].value_counts().unstack()
+    # Obtener el recuento de combinaciones 'purpose'-'loan_status'
+    grouped = df.groupby([column_df, 'loan_status']).size().unstack()
 
-    index = range(len(grouped.columns))
-    bar_width = 0.2
+    # Crear el gráfico de barras apiladas
+    fig, ax = plt.subplots(figsize=(10, 6))
 
-    # Iterar sobre cada valor de 'loan_status' y dibujar una barra para cada valor de la variable categórica en estudio
-    for i, status in enumerate(grouped.index):
-        ax.bar([x + i * bar_width for x in index], grouped.loc[status], bar_width, label=status)
+    index = range(len(grouped))
+
+    # Iterar sobre cada tipo de 'purpose' y dibujar barras apiladas para cada tipo de 'loan_status'
+    bottoms = [0] * len(grouped)
+    for status in grouped.columns:
+        ax.bar(index, grouped[status], label=status, bottom=bottoms)
+        bottoms = [sum(x) for x in zip(bottoms, grouped[status])]
 
     # Añadir etiquetas, título y leyenda
-    ax.set_xlabel(f'{column_df}')
+    ax.set_xlabel(column_df)
     ax.set_ylabel('Valores')
-    ax.set_title(f'{column_df} por status del préstamo')
-    ax.set_xticks([x + (len(grouped.index) - 1) * bar_width / 2 for x in index])
-    ax.set_xticklabels(grouped.columns)
+    ax.set_title(f'{column_df} por Pagados/Impagados')
+    ax.set_xticks(index)
+    ax.set_xticklabels(grouped.index, rotation=90)
     ax.legend()
 
-    # Mostrar el gráfico de barras agrupado
+    # Mostrar el gráfico de barras apiladas
+    plt.tight_layout()
     plt.show()
 
 
@@ -185,6 +188,8 @@ def test_t_student(df_paid, df_charged_off, column_df):
     else:
         print(f"No se puede rechazar la hipótesis nula: la variable {column_df} no incide en el impago del crédito")
 
+
+# Función Prueba Chi-Cuadrado
 def test_chi_cuadrado(df, column_df):
     '''
     La función realiza la prueba de chi-cuadrado entre una variable categórica de estudio
