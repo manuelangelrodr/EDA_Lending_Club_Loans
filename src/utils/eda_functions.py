@@ -67,23 +67,25 @@ def mapa_calor_impagados_cont(df, column_df, color):
     Output:
     Mapa de calor
     '''
+    # Copiamos el df
+    df_copy = df.copy()
+    
     # Divide la variable en 20 tramos
-    df['income_bins'] = pd.cut(df['annual_income'], bins=20)
+    df_copy['bins'] = pd.cut(df_copy[column_df], bins=20)
 
     
     # Filtrar datos donde 'loan_status' sea igual a 'charged off'
-    charged_off_data = df[df['loan_status'] == 'charged off']
+    charged_off_data = df_copy[df['loan_status'] == 'charged off']
 
     # Calcular los porcentajes de 'charged off' para cada tramo de la variable
-    pivot_data = charged_off_data['income_bins'].value_counts(normalize=True).sort_index() * 100
+    pivot_data = charged_off_data['bins'].value_counts(normalize=True).sort_index() * 100
 
     # Crear un mapa de calor
     plt.figure(figsize=(12, 8))
     sns.heatmap(pivot_data.to_frame(), cmap=color, annot=True, fmt='.2f', cbar=True)
     plt.title(f'Porcentaje de impagados por tramo de {column_df}')
-    plt.xlabel(f'Tramos de {column_df}')
-    plt.ylabel('Proporción de impagados por tramos')
-    plt.xticks(rotation=45)
+    plt.xlabel(f'Porcentajes de impagados de {column_df}')
+    plt.ylabel(f'Tramos de {column_df}')
     plt.tight_layout()
     plt.show()
 
