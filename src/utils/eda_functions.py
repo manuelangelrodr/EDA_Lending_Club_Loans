@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import ttest_ind
 from scipy.stats import chi2_contingency
+from scipy.stats import mannwhitneyu
 
 
 # FUNCIONES ANÁLISIS UNIVARIANTE
@@ -253,3 +254,27 @@ def test_chi_cuadrado(df, column_df):
     else:
         print(f"No se puede rechazar la hipótesis nula: la variable {column_df} no incide en el impago del crédito")
 
+def test_mann_whitney(df1, df2, column_df):
+    '''
+    La función realiza la prueba de Mann-Whitney entre dos variable numérica continua de la que no conocemos su distribución.
+
+
+    Parámetros:
+    df: Dataframe de Pandas
+    column_df: Nombre de la columna de la variable numérica
+    
+    Output:
+    Estadístico Kruskal-Wallis, valor p, rechazo o no de la hipótesis nula
+    '''
+
+    # Realizar la prueba de Mann-Whitney
+    resultado_mannwhitney = mannwhitneyu(df1[column_df],
+                                         df2[column_df])
+
+    # Imprimir el resultado del contraste de hipótesis
+    print(f"Estadístico Mann-Whitney: {resultado_mannwhitney.statistic}")
+    print(f"Valor p: {resultado_mannwhitney.p_value}")
+    if resultado_mannwhitney.p_value < 0.05:
+        print(f"Se rechaza la hipótesis nula: Hay diferencias significativas de la variable {column_df} entre pagados e impagados")
+    else:
+        print(f"No se puede rechazar la hipótesis nula: No hay diferencias significativas de la variable {column_df} entre pagos e impagos")
