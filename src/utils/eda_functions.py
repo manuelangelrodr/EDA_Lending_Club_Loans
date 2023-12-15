@@ -52,6 +52,42 @@ def graficos_var_cont(df, column_df, color):
     # Mostrar los gráficos combinados
     plt.show()
 
+def mapa_calor_impagados_cont(df, column_df, color):
+
+     '''
+    Función que crea un mapa de calor de una columna con variables contínuas 
+    según el porcentaje de impagados por cada tramo.
+    La función divide los tramos en 20 tramos.
+
+    Parámetros:
+    df: Dataframe de Pandas
+    col_heatmap: Nombre de la columna de la variable continua
+    color: Color del mapa de calor
+
+    Output:
+    Mapa de calor
+    '''
+
+    # Divide la variable en 20 tramos
+    df['income_bins'] = pd.cut(df['annual_income'], bins=20)
+
+    
+    # Filtrar datos donde 'loan_status' sea igual a 'charged off'
+    charged_off_data = df[df['loan_status'] == 'charged off']
+
+    # Calcular los porcentajes de 'charged off' para cada tramo de la variable
+    pivot_data = charged_off_data['income_bins'].value_counts(normalize=True).sort_index() * 100
+
+    # Crear un mapa de calor
+    plt.figure(figsize=(12, 8))
+    sns.heatmap(pivot_data.to_frame(), cmap=color, annot=True, fmt='.2f', cbar=True)
+    plt.title(f'Porcentaje de impagados por tramo de {column_df}')
+    plt.xlabel(f'Tramos de {column_df}')
+    plt.ylabel('Proporción de impagados por tramos')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
+
 
 
 def grafico_mapa_calor_impagados(df, col_heatmap, color):
