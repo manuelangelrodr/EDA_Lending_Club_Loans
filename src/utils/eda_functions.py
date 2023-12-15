@@ -273,8 +273,8 @@ def test_mann_whitney(df1, df2, column_df):
 
     # Imprimir el resultado del contraste de hipótesis
     print(f"Estadístico Mann-Whitney: {resultado_mannwhitney.statistic}")
-    print(f"Valor p: {resultado_mannwhitney.p_value}")
-    if resultado_mannwhitney.p_value < 0.05:
+    print(f"Valor p: {resultado_mannwhitney.pvalue}")
+    if resultado_mannwhitney.pvalue < 0.05:
         print(f"Se rechaza la hipótesis nula: Hay diferencias significativas de la variable {column_df} entre pagados e impagados")
     else:
         print(f"No se puede rechazar la hipótesis nula: No hay diferencias significativas de la variable {column_df} entre pagos e impagos")
