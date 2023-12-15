@@ -54,7 +54,7 @@ def graficos_var_cont(df, column_df, color):
 
 def mapa_calor_impagados_cont(df, column_df, color):
 
-     '''
+    '''
     Función que crea un mapa de calor de una columna con variables contínuas 
     según el porcentaje de impagados por cada tramo.
     La función divide los tramos en 20 tramos.
@@ -67,7 +67,6 @@ def mapa_calor_impagados_cont(df, column_df, color):
     Output:
     Mapa de calor
     '''
-
     # Divide la variable en 20 tramos
     df['income_bins'] = pd.cut(df['annual_income'], bins=20)
 
