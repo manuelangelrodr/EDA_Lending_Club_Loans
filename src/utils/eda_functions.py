@@ -77,9 +77,12 @@ def mapa_calor_impagados_cont(df, column_df, color):
     
     # Filtrar datos donde 'loan_status' sea igual a 'charged off'
     charged_off_data = df_copy[df['loan_status'] == 'charged off']
+    fully_paid_data = df_copy[df['loan_status'] == 'fully paid']
 
     # Calcular los porcentajes de 'charged off' para cada tramo de la variable
-    pivot_data = charged_off_data['bins'].value_counts(normalize=True).sort_index() * 100
+    pivot_data_impagados = charged_off_data['bins'].value_counts(normalize=True).sort_index() * 100
+    pivot_data_pagados = fully_paid_data['bins'].value_counts(normalize=True).sort_index() * 100
+    pivot_data = pivot_data_impagados / pivot_data_pagados
 
     # Crear un mapa de calor
     plt.figure(figsize=(12, 8))
@@ -90,7 +93,42 @@ def mapa_calor_impagados_cont(df, column_df, color):
     plt.tight_layout()
     plt.show()
 
+def mapa_calor_pagados_cont(df, column_df, color):
 
+    '''
+    Función que crea un mapa de calor de una columna con variables contínuas 
+    según el porcentaje de impagados por cada tramo.
+    La función divide los tramos en 20 tramos.
+
+    Parámetros:
+    df: Dataframe de Pandas
+    col_heatmap: Nombre de la columna de la variable continua
+    color: Color del mapa de calor
+
+    Output:
+    Mapa de calor
+    '''
+    # Copiamos el df
+    df_copy = df.copy()
+    
+    # Divide la variable en 20 tramos
+    df_copy['bins'] = pd.cut(df_copy[column_df], bins=20)
+
+    
+    # Filtrar datos donde 'loan_status' sea igual a 'fully paid'
+    fully_paid_data = df_copy[df['loan_status'] == 'fully paid']
+
+    # Calcular los porcentajes de 'charged off' para cada tramo de la variable
+    pivot_data = fully_paid_data['bins'].value_counts(normalize=True).sort_index() * 100
+
+    # Crear un mapa de calor
+    plt.figure(figsize=(12, 8))
+    sns.heatmap(pivot_data.to_frame(), cmap=color, annot=True, fmt='.2f', cbar=True)
+    plt.title(f'Porcentaje de pagados por tramo de {column_df}')
+    plt.xlabel(f'Porcentajes de pagados de {column_df}')
+    plt.ylabel(f'Tramos de {column_df}')
+    plt.tight_layout()
+    plt.show()
 
 def grafico_mapa_calor_impagados(df, col_heatmap, color):
 
